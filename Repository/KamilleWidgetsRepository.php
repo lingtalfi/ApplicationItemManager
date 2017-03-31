@@ -1,18 +1,24 @@
 <?php
 
 
-namespace ApplicationItemManager\ItemList;
+namespace ApplicationItemManager\Repository;
 
 
-class KamilleWidgetsItemList extends AbstractItemList
+class KamilleWidgetsRepository extends AbstractRepository
 {
+    public function getName()
+    {
+        return 'KamilleWidgets';
+    }
+
+
     //--------------------------------------------
     // OVERRIDE THOSE METHODS
     //--------------------------------------------
     protected function createItemList()
     {
         return [
-            'KamilleWidgets.BookedMeteo' => [
+            'BookedMeteo' => [
                 'deps' => [],
                 'description' => "Widget to display the weather conditions for your city",
             ],

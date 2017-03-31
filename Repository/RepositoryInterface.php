@@ -1,43 +1,55 @@
 <?php
 
 
-namespace ApplicationItemManager\ItemList;
+namespace ApplicationItemManager\Repository;
 
 /**
- * - item: importerId.itemName
+ * A repository is a publicly accessible entity
+ * which contains a certain type of item (for instance a module repository, or a widget repository,
+ * or a theme repository, and so on...).
+ *
+ * A repository has a name which is referenced as repositoryId by other objects.
+ *
+ * That's because an item with the same itemName might be potentially available from two different repositories
+ * (that should be rare though), and so the repositoryId helps targeting precisely the item we want.
+ *
+ *
+ *
+ *
+ *
  */
-interface ItemListInterface
+interface RepositoryInterface
 {
 
+    public function getName();
+
+
     /**
-     * Returns the dependencyTree for the given item.
-     *
-     * The dependencyTree is an array containing
-     * the names of all items related to the given item.
-     *
-     * This means the item dependencies, plus the item itself as the first entry.
-     *
-     *
+     * Returns an array of itemIds (defined in doc) containing the dependencies, recursively, for the given item.
      */
-    public function getDependencyTree($item);
+    public function getDependencies($itemName);
 
 
     /**
+     * Returns an array of itemIds (defined in doc) containing the hard dependencies, recursively, for the given item.
+     *
+     *
+     *
      * Some items only make sense in the context of a parent item.
      * So that if the parent item is removed, it doesn't make sense to keep the children items in the application.
      *
      * A hard dependency is the term used for this type of relationship.
      *
-     * An child item with a hard dependency to a parent item is uninstalled when the parent is uninstalled.
+     * A child item with a hard dependency to a parent item is uninstalled when the parent is uninstalled.
      *
      */
-    public function getHardDependencyTree($item);
+    public function getHardDependencies($itemName);
 
 
     /**
-     * Returns whether or not the list contains the given item.
+     * Returns whether or not the repository handles the given item.
      */
-    public function has($item);
+    public function has($itemName);
 
     /**
      * in: an array of where to search, and also what to return.
@@ -59,7 +71,7 @@ interface ItemListInterface
 
     /**
      * returns the list of all items.
-     * If keys is null, returns a flat list (one dimension array).
+     * If keys is null, returns a flat list (one dimension array) which values are the items.
      * If keys is an array, returns an array containing the keys as keys, and the corresponding
      * values (or null if not set) as values.
      */

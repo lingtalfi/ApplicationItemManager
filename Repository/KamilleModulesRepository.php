@@ -1,18 +1,25 @@
 <?php
 
 
-namespace ApplicationItemManager\ItemList;
+namespace ApplicationItemManager\Repository;
 
 
-class KamilleModulesItemList extends AbstractItemList
+class KamilleModulesRepository extends AbstractRepository
 {
+
+    public function getName()
+    {
+        return 'KamilleModules';
+    }
+
+
     //--------------------------------------------
     // OVERRIDE THOSE METHODS
     //--------------------------------------------
     protected function createItemList()
     {
         return [
-            'KamilleModules.Connexion' => [
+            'Connexion' => [
                 'deps' => [
                     '+KamilleModules.GentelellaWebDirectory',
                 ],
@@ -23,7 +30,7 @@ Tags: kaminos; lingtalfi
 EEE
                 ,
             ],
-            'KamilleModules.GentelellaWebDirectory' => [
+            'GentelellaWebDirectory' => [
                 'deps' => [],
                 'description' => <<<EEE
 This module imports the gentelella admin theme into the web directory of your application.
