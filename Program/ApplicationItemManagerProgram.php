@@ -7,7 +7,10 @@ namespace ApplicationItemManager\Program;
 use ApplicationItemManager\ApplicationItemManager;
 use ApplicationItemManager\ApplicationItemManagerInterface;
 use ApplicationItemManager\Exception\ApplicationItemManagerException;
+use Bat\FileSystemTool;
 use CommandLineInput\CommandLineInputInterface;
+use Dir2Symlink\Dir2Symlink;
+use Dir2Symlink\ProgramOutputAwareDir2Symlink;
 use DirectoryCleaner\DirectoryCleaner;
 use Output\ProgramOutputInterface;
 use Program\Program;
@@ -111,29 +114,47 @@ class ApplicationItemManagerProgram extends Program
                 }
             })
             ->addCommand("clean", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
-                if (null !== $this->importDirectory) {
 
-                    $itemName = $input->getParameter(2);
 
-                    $dir = $this->importDirectory;
+                $itemName = $input->getParameter(2);
 
-                    if (null !== $itemName) {
-                        $dir .= "/$itemName";
-                        if (!is_dir($dir)) {
-                            throw new ApplicationItemManagerException("Not a directory: $dir");
-                        }
+                $dir = $this->getImportDirectory();
+
+                if (null !== $itemName) {
+                    $dir .= "/$itemName";
+                    if (!is_dir($dir)) {
+                        throw new ApplicationItemManagerException("Not a directory: $dir");
                     }
-                    $recursive = true;
-                    DirectoryCleaner::create()->setUseSymlinks(false)->clean($dir, $recursive);
-                    $output->notice("ok");
-
-                } else {
-                    throw new ApplicationItemManagerException("importDirectory not set");
                 }
+                $recursive = true;
+                DirectoryCleaner::create()->setUseSymlinks(false)->clean($dir, $recursive);
+                $output->notice("ok");
+            })
+            ->addCommand("setlocalrepo", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
+
+                $path = $input->getParameter(2);
+                $file = $this->getFile();
+                if (true === FileSystemTool::mkfile($file, $path)) {
+                    $output->notice("ok");
+                } else {
+                    $output->error("couldn't create the file $file");
+                }
+            })
+            ->addCommand("getlocalrepo", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
+                if (false !== ($content = $this->getLocalRepository($output))) {
+                    $output->notice($content);
+                }
+            })
+            ->addCommand("todir", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
+                $this->dir2Symlink("toDirectories", $output);
+            })
+            ->addCommand("tolink", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
+                $this->dir2Symlink("toSymlinks", $output);
             });
 
 
     }
+
 
     public function setManager(ApplicationItemManagerInterface $manager)
     {
@@ -190,6 +211,58 @@ class ApplicationItemManagerProgram extends Program
     protected function nbIndentSpaces()
     {
         return 4;
+    }
+
+    //--------------------------------------------
+    //
+    //--------------------------------------------
+    private function getFile()
+    {
+        if (null !== $this->importDirectory) {
+            return $this->importDirectory . "/aimp.txt";
+        } else {
+            throw new ApplicationItemManagerException("importDirectory not set");
+        }
+    }
+
+    private function getLocalRepository(ProgramOutputInterface $output)
+    {
+        $file = $this->getFile();
+        if (file_exists($file)) {
+            return trim(file_get_contents($file));
+        }
+        $output->error("file does not exist: " . $file . ", you should probably use the setlocalrepo command first");
+        return false;
+    }
+
+    private function getImportDirectory()
+    {
+        if (null !== $this->importDirectory) {
+            if (is_dir($this->importDirectory)) {
+                return $this->importDirectory;
+            } else {
+                throw new ApplicationItemManagerException("importDirectory not valid: " . $this->importDirectory);
+            }
+        } else {
+            throw new ApplicationItemManagerException("importDirectory not set");
+        }
+    }
+
+
+    private function dir2Symlink($method, ProgramOutputInterface $output)
+    {
+        $importDir = $this->getImportDirectory();
+        if (false !== ($localRepoDir = $this->getLocalRepository($output))) {
+            if (is_dir($localRepoDir)) {
+                if (true === ProgramOutputAwareDir2Symlink::create()->setProgramOutput($output)->$method($localRepoDir, $importDir)) {
+                    $output->notice("ok");
+                } else {
+                    $output->error("Couldn't convert all the entries in $importDir to directories, sorry");
+                }
+            } else {
+                $output->error("Local repository is not a dir: $localRepoDir. Use the setlocalrepo command to update the value");
+            }
+        }
     }
 }
 

@@ -157,17 +157,24 @@ class LingUniverseRepository extends AbstractRepository
                 ],
                 'description' => 'Csv utility tools.',
             ],
-            'DirScanner' => [
+            'Dir2Symlink' => [
                 'deps' => [
                     'ling.Bat',
+                    'ling.Output',
                 ],
-                'description' => 'Utility to scan a directory recursively and do something on every entry.',
+                'description' => 'Converts directories to symlinks, and vice versa.',
             ],
             'DirectoryCleaner' => [
                 'deps' => [
                     'ling.Bat',
                 ],
                 'description' => 'A tool to remove undesirable entries from a directory.',
+            ],
+            'DirScanner' => [
+                'deps' => [
+                    'ling.Bat',
+                ],
+                'description' => 'Utility to scan a directory recursively and do something on every entry.',
             ],
             'DirTransformer' => [
                 'deps' => [

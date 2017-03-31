@@ -214,19 +214,32 @@ The word item is defined like this:
 - itemId: repositoryId.itemName | repositoryAlias.itemName
 
 
-
+# import/install
 myprog import {item}                       # import an item and its dependencies, skip already existing item(s)/dependencies
 myprog import -f {item}                    # import an item and its dependencies, replace already existing item(s)/dependencies
 myprog install {item}                      # install an item and its dependencies, will import them if necessary, skip already existing item(s)/dependencies
 myprog install -f {item}                   # install an item and its dependencies, will import them if necessary, replace already existing item(s)/dependencies
 myprog uninstall {item}                    # call the uninstall method on the given item and dependencies
+
+# list/search
 myprog list {repoAlias}?                   # list available items
 myprog listd {repoAlias}?                  # list available items with their description if any
 myprog listimported                        # list imported items
 myprog listinstalled                       # list installed items
 myprog search {term} {repoAlias}?          # search through available items names
 myprog searchd {term} {repoAlias}?         # search through available items names and/or description
+
+# local (shared) repo                            
+myprog setlocalrepo {repoPath}             # set the local repository path 
+myprog getlocalrepo                        # print the local repository path
+myprog todir                               # converts the top level items of the import directory to directories (based on the directories in local repo) 
+myprog tolink                              # converts the top level items of the import directory to symlinks to the directories in local repo 
+
+
+# utilities
 myprog clean                               # removes the .git, .gitignore, .idea and .DS_Store files in your items directories, recursively
+
+
 
 
 For instance:
@@ -368,7 +381,11 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 History Log
 ------------------
     
-- 1.1.0 -- 2017-03-30
+- 1.2.0 -- 2017-03-31
+
+    - added setlocalrepo, getlocalrepo, todir, tolink methods for ApplicationItemManagerProgram
+    
+- 1.1.0 -- 2017-03-31
 
     - renamed ItemList to Repository
     
