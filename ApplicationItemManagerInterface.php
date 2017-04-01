@@ -31,12 +31,35 @@ interface ApplicationItemManagerInterface
     public function import($item, $force = false);
 
     /**
+     * Import all items at once.
+     *
+     * if repoId is specified, it constrains the import to the specified repoId(s).
+     * repoId can be a string identifying a specific repository name, or an array of repository names.
+     *
+     *
+     * @return bool, true if everything went right, and false otherwise
+     */
+    public function importAll($repoId = null, $force = false);
+
+    /**
      * Install an item and its dependencies.
      * If force is false, will not try to re-install already installed items.
      * If force is true, will (re-)install all items, even those already installed.
      *
      */
     public function install($item, $force = false);
+
+
+    /**
+     * Install all items at once.
+     *
+     * if repoId is specified, it constrains the import to the specified repoId(s).
+     * repoId can be a string identifying a specific repository name, or an array of repository names.
+     *
+     *
+     * @return bool, true if everything went right, and false otherwise
+     */
+    public function installAll($repoId = null, $force = false);
 
     /**
      * Uninstall an item and its hard dependencies.

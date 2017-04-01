@@ -404,7 +404,7 @@ class LingUniverseRepository extends AbstractRepository
             ],
             'Packer' => [
                 'deps' => [
-                    'ling.DirSscanner',
+                    'ling.DirScanner',
                     'ling.TokenFun',
                 ],
                 'description' => 'A tool to pack multiple files into one.',

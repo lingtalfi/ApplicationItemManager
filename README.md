@@ -217,9 +217,14 @@ The word item is defined like this:
 # import/install
 myprog import {item}                       # import an item and its dependencies, skip already existing item(s)/dependencies
 myprog import -f {item}                    # import an item and its dependencies, replace already existing item(s)/dependencies
+myprog importall {repoId}?                 # import all items at once, skip already existing item(s)/dependencies
+myprog importall {repoId}? -f              # import all items at once, replace already existing item(s)/dependencies
 myprog install {item}                      # install an item and its dependencies, will import them if necessary, skip already existing item(s)/dependencies
 myprog install -f {item}                   # install an item and its dependencies, will import them if necessary, replace already existing item(s)/dependencies
+myprog installall {repoId}?                # install all items at once, will import them if necessary, skip already existing item(s)/dependencies
+myprog installall {repoId}? -f             # install all items at once, will import them if necessary, replace already existing item(s)/dependencies
 myprog uninstall {item}                    # call the uninstall method on the given item and dependencies
+
 
 # list/search
 myprog list {repoAlias}?                   # list available items
@@ -247,10 +252,14 @@ For instance:
     myprog import km.Connexion
     myprog import -f Connexion
     myprog import -f km.Connexion
+    myprog importall
+    myprog importall -f
     myprog install Connexion
     myprog install km.Connexion
     myprog install -f Connexion
     myprog install -f km.Connexion
+    myprog installall
+    myprog installall -f
     myprog uninstall Connexion
     myprog uninstall km.Connexion
     myprog list
@@ -282,25 +291,36 @@ The example below use the ApplicationItemManager for the universe.
 
 
 use ApplicationItemManager\Importer\GithubImporter;
+
+
 use ApplicationItemManager\LingApplicationItemManager;
 use ApplicationItemManager\Program\ApplicationItemManagerProgram;
+
 use ApplicationItemManager\Repository\LingUniverseRepository;
 use CommandLineInput\ProgramOutputAwareCommandLineInput;
-use Kamille\Architecture\ApplicationParameters\ApplicationParameters;
 use Output\ProgramOutput;
 
 //--------------------------------------------
 // UNIVERSE PROGRAM
 //--------------------------------------------
-$_SERVER['APPLICATION_ENVIRONMENT'] = "dev"; // hack environment here depending on your prefs
-require_once __DIR__ . "/../boot.php"; // start your autoloaders...
+/**
+ * As for now, the universe doesn't have any special installer,
+ * so we don't need to initialize an environment for them (but plans are made
+ * to change that in the future though).
+ * We can simply call any autoloader that we want.
+ */
+require_once __DIR__ . "/class-program/bigbang.php";
+
+
+$appDir = getcwd();
+$importDir = $appDir . "/planets";
+$helpFile = __DIR__ . "/class-program/help.txt";
+
 
 $output = ProgramOutput::create();
-$appDir = ApplicationParameters::get("app_dir");
-$importDir = "/myphp/kaminos/app/planets";
 $manager = LingApplicationItemManager::create()
     ->setOutput($output)
-    ->addRepository(LingUniverseRepository::create(), ['km'])
+    ->addRepository(LingUniverseRepository::create())
     ->setFavoriteRepositoryId('ling')
     ->bindImporter('ling', GithubImporter::create()->setGithubRepoName("lingtalfi"))
     ->setImportDirectory($importDir);
@@ -312,6 +332,8 @@ $input = ProgramOutputAwareCommandLineInput::create($argv)
     ->addFlag("v");
 
 ApplicationItemManagerProgram::create()
+    ->setHelpFile($helpFile)
+    ->setDefaultCommand("help")
     ->setManager($manager)
     ->setInput($input)
     ->setOutput($output)
@@ -380,6 +402,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 
 History Log
 ------------------
+    
+- 1.4.0 -- 2017-04-01
+
+    - add ApplicationItemManager.importAll and installAll methods, and corresponding program commands
     
 - 1.3.0 -- 2017-04-01
 

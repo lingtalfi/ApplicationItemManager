@@ -50,6 +50,15 @@ class ApplicationItemManagerProgram extends Program
                     $this->manager->import($itemName, $force);
                 }
             })
+            ->addCommand("importall", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
+                $force = $input->getFlagValue('f');
+                $repoId = $input->getParameter(2);
+                if (true === $this->manager->importAll($repoId, $force)) {
+                    $output->success("All items were imported");
+                } else {
+                    $output->error("Some items couldn't be imported");
+                }
+            })
             ->addCommand("install", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
                 $force = $input->getFlagValue('f');
                 if (false !== ($itemName = ProgramHelper::getParameter(2, $itemType, $input, $output))) {

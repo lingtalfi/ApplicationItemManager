@@ -113,21 +113,12 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
     }
 
 
-
     //--------------------------------------------
     //
     //--------------------------------------------
     public function listAvailable($repoId = null, array $keys = null)
     {
-        $repoIds = [];
-        if (null === $repoId) {
-            $repoIds = $this->_repositories;
-        } else {
-            if (false === array_key_exists($repoId, $this->repositories)) {
-                throw new ApplicationItemManagerException("Repo id doesn't exist: $repoId");
-            }
-            $repoIds = [$repoId];
-        }
+        $repoIds = $this->collectRepoIds($repoId);
 
 
         $ret = [];
@@ -179,15 +170,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
 
     public function search($text, array $keys = null, $repoId = null)
     {
-        $repoIds = [];
-        if (null === $repoId) {
-            $repoIds = $this->_repositories;
-        } else {
-            if (false === array_key_exists($repoId, $this->repositories)) {
-                throw new ApplicationItemManagerException("Repo id doesn't exist: $repoId");
-            }
-            $repoIds = [$repoId];
-        }
+        $repoIds = $this->collectRepoIds($repoId);
 
         $ret = [];
         if (null === $keys) {
@@ -219,6 +202,36 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
             return $this->handleProcedure("import", $item, $repoId, $force);
         }
         return false;
+    }
+
+    public function importAll($repoId = null, $force = false)
+    {
+
+        $all = $this->getAllDeps($repoId);
+        $allOk = true;
+        foreach ($all as $item) {
+            $itemName = $this->getItemNameByItem($item);
+            $repoId = $this->getRepoIdByItemId($item);
+            if (false === $this->doImport($itemName, $repoId, $force)) {
+                $allOk = false;
+            }
+        }
+        return $allOk;
+    }
+
+
+    public function installAll($repoId = null, $force = false)
+    {
+        $all = $this->getAllDeps($repoId);
+        $allOk = true;
+        foreach ($all as $item) {
+            $itemName = $this->getItemNameByItem($item);
+            $repoId = $this->getRepoIdByItemId($item);
+            if (false === $this->doInstall($itemName, $repoId, $force)) {
+                $allOk = false;
+            }
+        }
+        return $allOk;
     }
 
 
@@ -523,6 +536,26 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
     //--------------------------------------------
     //
     //--------------------------------------------
+    private function collectRepoIds($repoId = null)
+    {
+        $repoIds = [];
+        if (null === $repoId) {
+            $repoIds = $this->_repositories;
+        } elseif (is_array($repoId)) {
+            $repoIds = $repoId;
+
+        } else {
+            $repoIds = [$repoId];
+        }
+        foreach ($repoIds as $repoId) {
+            if (false === array_key_exists($repoId, $this->repositories)) {
+                throw new ApplicationItemManagerException("Repo id doesn't exist: $repoId");
+            }
+        }
+        return $repoIds;
+    }
+
+
     private function getItemNameByItem($item)
     {
         $p = explode('.', $item, 2);
@@ -532,6 +565,15 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         return $item;
     }
 
+    private function getRepoIdByItemId($itemId)
+    {
+        $p = explode('.', $itemId, 2);
+        if (2 === count($p)) {
+            return $p[0];
+        }
+        throw new ApplicationItemManagerException("Invalid itemId syntax: $itemId. itemId=repoId.itemName");
+    }
+
     private function getRepoId($item)
     {
         $this->msg("checkingRepo", $item);
@@ -539,8 +581,8 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         if (null === $repoId) {
             $this->msg("noRepositoryFound", $item);
             if (false !== strpos($item, '.')) {
-                $p = explode('.', $item);
-                $this->msg("invalidRepository", $p[0]);
+                $repoId = $this->getRepoIdByItemId($item);
+                $this->msg("invalidRepository", $repoId);
                 return false;
             }
         } else {
@@ -626,6 +668,33 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
     private function isInstalled($itemName)
     {
         return $this->installer->isInstalled($itemName);
+    }
+
+    /**
+     * @return array (flattened) of all itemIds
+     */
+    private function getAllDeps($repoId = null)
+    {
+        $repoIds = $this->collectRepoIds($repoId);
+        $all = [];
+        foreach ($repoIds as $repoId) {
+            $repo = $this->repositories[$repoId];
+            $name = $repo->getName();
+            $repoAll = $repo->all();
+            foreach ($repoAll as $repoItem) {
+                $fullRepoItem = $name . "." . $repoItem;
+                $all[] = $fullRepoItem;
+                $deps = $repo->getDependencies($repoItem);
+                foreach ($deps as $dep) {
+                    if (!in_array($dep, $all, true)) {
+                        $all[] = $dep;
+                    }
+                }
+            }
+        }
+        $all = array_unique($all);
+        sort($all);
+        return $all;
     }
 
 }
