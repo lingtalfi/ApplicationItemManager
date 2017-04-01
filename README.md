@@ -234,11 +234,11 @@ myprog listinstalled                       # list installed items
 myprog search {term} {repoAlias}?          # search through available items names
 myprog searchd {term} {repoAlias}?         # search through available items names and/or description
 
-# local (shared) repo                            
-myprog setlocalrepo {repoPath}             # set the local repository path 
+# local (shared) repo
+myprog setlocalrepo {repoPath}             # set the local repository path
 myprog getlocalrepo                        # print the local repository path
-myprog todir                               # converts the top level items of the import directory to directories (based on the directories in local repo) 
-myprog tolink                              # converts the top level items of the import directory to symlinks to the directories in local repo 
+myprog todir                               # converts the top level items of the import directory to directories (based on the directories in local repo)
+myprog tolink                              # converts the top level items of the import directory to symlinks to the directories in local repo
 
 
 # utilities
@@ -272,6 +272,10 @@ For instance:
     myprog search ling km
     myprog searchd kaminos
     myprog searchd kaminos km
+    myprog setlocalrepo /path/to/local/repo
+    myprog getlocalrepo
+    myprog tolink
+    myprog todir
     myprog clean
 ```
 
@@ -402,6 +406,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 
 History Log
 ------------------
+    
+- 1.4.2 -- 2017-04-01
+
+    - update help
     
 - 1.4.1 -- 2017-04-01
 

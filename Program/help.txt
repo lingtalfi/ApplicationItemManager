@@ -1,45 +1,71 @@
 Usage
 -------
-kamille import {module}                     # import a module and its dependencies, skip already existing module(s)/dependencies
-kamille import -f {module}                  # import a module and its dependencies, replace already existing module(s)/dependencies
-kamille install {module}                    # install a module and its dependencies, will import if necessary, skip already existing module(s)/dependencies
-kamille install -f {module}                 # install a module and its dependencies, will import if necessary, replace already existing module(s)/dependencies
-kamille uninstall {module}                  # call the uninstall method of the given module
-kamille list {importerAlias}?               # list available modules
-kamille listd {importerAlias}?              # list available modules with their description if any
-kamille listimported                        # list imported modules
-kamille listinstalled                       # list installed modules
-kamille search {term} {importerAlias}?      # search through available modules names
-kamille searchd {term} {importerAlias}?     # search through available modules names and/or description
-kamille clean                               # removes the .git, .gitignore, .idea and .DS_Store files at the top level of your modules' directories
-kamille cleanr                              # removes the .git, .gitignore, .idea and .DS_Store files in your modules directories, recursively
+
+The word item is defined like this:
+- item: itemId | itemName
+- itemId: repositoryId.itemName | repositoryAlias.itemName
+
+
+# import/install
+myprog import {item}                       # import an item and its dependencies, skip already existing item(s)/dependencies
+myprog import -f {item}                    # import an item and its dependencies, replace already existing item(s)/dependencies
+myprog importall {repoId}?                 # import all items at once, skip already existing item(s)/dependencies
+myprog importall {repoId}? -f              # import all items at once, replace already existing item(s)/dependencies
+myprog install {item}                      # install an item and its dependencies, will import them if necessary, skip already existing item(s)/dependencies
+myprog install -f {item}                   # install an item and its dependencies, will import them if necessary, replace already existing item(s)/dependencies
+myprog installall {repoId}?                # install all items at once, will import them if necessary, skip already existing item(s)/dependencies
+myprog installall {repoId}? -f             # install all items at once, will import them if necessary, replace already existing item(s)/dependencies
+myprog uninstall {item}                    # call the uninstall method on the given item and dependencies
+
+
+# list/search
+myprog list {repoAlias}?                   # list available items
+myprog listd {repoAlias}?                  # list available items with their description if any
+myprog listimported                        # list imported items
+myprog listinstalled                       # list installed items
+myprog search {term} {repoAlias}?          # search through available items names
+myprog searchd {term} {repoAlias}?         # search through available items names and/or description
+
+# local (shared) repo
+myprog setlocalrepo {repoPath}             # set the local repository path
+myprog getlocalrepo                        # print the local repository path
+myprog todir                               # converts the top level items of the import directory to directories (based on the directories in local repo)
+myprog tolink                              # converts the top level items of the import directory to symlinks to the directories in local repo
+
+
+# utilities
+myprog clean                               # removes the .git, .gitignore, .idea and .DS_Store files in your items directories, recursively
+
+
+
 
 For instance:
-    kamille import Connexion
-    kamille import km.Connexion
-    kamille import -f Connexion
-    kamille import -f km.Connexion
-    kamille install Connexion
-    kamille install km.Connexion
-    kamille install -f Connexion
-    kamille install -f km.Connexion
-    kamille uninstall Connexion
-    kamille uninstall km.Connexion
-    kamille list
-    kamille list km
-    kamille listd
-    kamille listd km
-    kamille listimported
-    kamille listinstalled
-    kamille search ling
-    kamille search ling km
-    kamille searchd kaminos
-    kamille searchd kaminos km
-    kamille clean
-    kamille cleanr
-
-
-Options
--------------
--f: when used with the import keyword, force overwriting of existing modules and dependencies. If not set, the Importer will skip existing planets/dependencies.
-    when used with the install keyword, force the importing (in force mode too) of the modules
+    myprog import Connexion
+    myprog import km.Connexion
+    myprog import -f Connexion
+    myprog import -f km.Connexion
+    myprog importall
+    myprog importall -f
+    myprog install Connexion
+    myprog install km.Connexion
+    myprog install -f Connexion
+    myprog install -f km.Connexion
+    myprog installall
+    myprog installall -f
+    myprog uninstall Connexion
+    myprog uninstall km.Connexion
+    myprog list
+    myprog list km
+    myprog listd
+    myprog listd km
+    myprog listimported
+    myprog listinstalled
+    myprog search ling
+    myprog search ling km
+    myprog searchd kaminos
+    myprog searchd kaminos km
+    myprog setlocalrepo /path/to/local/repo
+    myprog getlocalrepo
+    myprog tolink
+    myprog todir
+    myprog clean
