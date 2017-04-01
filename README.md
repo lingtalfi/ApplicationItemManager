@@ -180,11 +180,9 @@ The ApplicationItemManagerInterface exposes the following methods:
 
 The most important are perhaps the import and install/uninstall methods.
 
-The algorithm for those methods can be found in this repository: I made two pdf documents
-describing those algorithms, in the "design" directory of this repository.
+The algorithm for those methods can be found in this repository:
 
-- https://github.com/lingtalfi/ApplicationItemManager/blob/master/doc/design/ApplicationItemManager-import-install-item-algo.pdf
-- https://github.com/lingtalfi/ApplicationItemManager/blob/master/doc/design/ApplicationItemManager-uninstall-item-algo.pdf
+- [ApplicationItemManager-import-install-uninstall-item-algo.pdf](https://github.com/lingtalfi/ApplicationItemManager/blob/master/doc/design/ApplicationItemManager-import-install-uninstall-item-algo.pdf)
 
 
 
@@ -199,7 +197,7 @@ you can create a console program out of it.
 
 The ApplicationItemManagerProgram object helps you a long way with that, encapsulating 
 your ApplicationItemManager instance and providing program commands for free (using the
-[Program](https://github.com/lingtalfi/program) planet under the hood):
+[Program](https://github.com/lingtalfi/Program) planet under the hood):
 
 
 
@@ -406,6 +404,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 
 History Log
 ------------------
+    
+- 1.5.0 -- 2017-04-01
+
+    - change uninstall algorithm
     
 - 1.4.2 -- 2017-04-01
 

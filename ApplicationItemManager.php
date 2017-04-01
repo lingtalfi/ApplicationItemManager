@@ -242,6 +242,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
             return $this->handleProcedure("install", $item, $repoId, $force);
         }
         return false;
+
     }
 
 
@@ -249,36 +250,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
     {
         if (false !== ($repoId = $this->getRepoId($item))) {
             $this->msg("uninstallingItem", $item);
-
-            $itemName = $this->getItemNameByItem($item);
-            $r = $this->doUninstall($itemName);
-            if (false === $r) {
-                return false;
-            } else {
-                if (null === $repoId) {
-                    return true;
-                } elseif (array_key_exists($repoId, $this->repositories)) {
-                    $itemName = $this->getItemNameByItem($item);
-
-                    $repo = $this->repositories[$repoId];
-                    $deps = $repo->getHardDependencies($itemName);
-
-                    $this->msg("checkingHardDependencies", $itemName, $deps);
-
-                    $allDepsOk = true;
-                    foreach ($deps as $dep) {
-                        $this->msg("uninstallingDependencyItem", $dep);
-                        $depName = $this->getItemNameByItem($dep);
-                        $r = $this->doUninstall($depName);
-                        if (false === $r) {
-                            $allDepsOk = false;
-                        }
-                    }
-                    return $allDepsOk;
-                } else {
-                    throw new \LogicException("no repository set for repoId $repoId");
-                }
-            }
+            return $this->handleProcedure("uninstall", $item, $repoId, false);
         }
         return false;
     }
@@ -286,7 +258,18 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
     private function doUninstall($itemName)
     {
         try {
-            return $this->installer->uninstall($itemName);
+            // is already installed?
+            if (false === $this->isInstalled($itemName)) {
+                $this->msg("itemAlreadyUninstalled", $itemName);
+                return true;
+            }
+
+
+            if (true === $this->installer->uninstall($itemName)) {
+                $this->msg("itemUninstalled", $itemName);
+            } else {
+                $this->msg("itemNotUninstalled", $itemName);
+            }
         } catch (\Exception $e) {
             $this->msg("uninstallProblem", $itemName, $e);
             return false;
@@ -300,7 +283,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
     protected function doInstall($itemName, $repoId = null, $force = false)
     {
         if (false === $force) {
-            // is already imported?
+            // is already installed?
             if (true === $this->isInstalled($itemName)) {
                 $this->msg("itemAlreadyInstalled", $itemName);
                 return true;
@@ -392,7 +375,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         $level = "info";
         switch ($type) {
             //--------------------------------------------
-            // IMPORT/INSTALL
+            // IMPORT/INSTALL/UNINSTALL
             //--------------------------------------------
             case 'checkingRepo':
                 $msg = "checking repo from $param...";
@@ -418,8 +401,19 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 $msg = "installing item $param";
                 $level = "info";
                 break;
+            case 'uninstallingItem':
+                $msg = "uninstalling " . $param;
+                $level = "info";
+                break;
             case 'checkingDependencies':
-                $msg = "checking dependencies for $param:";
+            case 'checkingHardDependencies':
+
+                if ("checkingHardDependencies" === $type) {
+                    $msg = "checking hard dependencies for $param:";
+                } else {
+                    $msg = "checking dependencies for $param:";
+                }
+
                 if (count($param2) > 0) {
                     $br = PHP_EOL;
                     $msg .= $br;
@@ -436,6 +430,10 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 break;
             case 'installingDependencyItem':
                 $msg = "installing dependency item $param";
+                $level = "info";
+                break;
+            case 'uninstallingDependencyItem':
+                $msg = "uninstalling dependency " . $param;
                 $level = "info";
                 break;
             //--------------------------------------------
@@ -489,31 +487,22 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 $level = "error";
                 break;
             //--------------------------------------------
-            // UNINSTALL
+            // DO UNINSTALL
             //--------------------------------------------
-            case 'uninstallingItem':
-                $msg = "uninstalling " . $param;
-                $level = "info";
+            case 'itemAlreadyUninstalled':
+                $msg = "$param already uninstalled";
+                $level = "success";
                 break;
-            case 'checkingHardDependencies':
-                $msg = "checking hard dependencies for $param:";
-                if (count($param2) > 0) {
-                    $br = PHP_EOL;
-                    $msg .= $br;
-                    foreach ($param2 as $dep) {
-                        $msg .= "- $dep" . $br;
-                    }
-                } else {
-                    $msg .= " none";
-                }
-                $level = "info";
-                break;
-            case 'uninstallingDependencyItem':
-                $msg = "uninstalling dependency " . $param;
-                $level = "info";
+            case 'itemUninstalled':
+                $msg = "$param uninstalled";
+                $level = "success";
                 break;
             case 'uninstallProblem':
-                $msg = "uninstall problem: " . $param2->getMessage();
+                $msg = "a problem occurred with the uninstall: " . $param2->getMessage();
+                $level = "error";
+                break;
+            case 'itemNotUninstalled':
+                $msg = "item $param couldn't be uninstalled: no reason was given.";
                 $level = "error";
                 break;
             default:
@@ -629,7 +618,16 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         if ('install' === $type) {
             $method = 'doInstall';
             $msgType = "installingDependencyItem";
+            $depMethod = "getDependencies";
+            $depMsgType = "checkingDependencies";
+        } elseif ('uninstall' === $type) {
+            $method = 'doUninstall';
+            $msgType = "uninstallingDependencyItem";
+            $depMethod = "getHardDependencies";
+            $depMsgType = "checkingHardDependencies";
         } else {
+            $depMethod = "getDependencies";
+            $depMsgType = "checkingDependencies";
             $method = 'doImport';
             $msgType = "importingDependencyItem";
         }
@@ -646,9 +644,9 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 $itemName = $this->getItemNameByItem($item);
 
                 $repo = $this->repositories[$repoId];
-                $deps = $repo->getDependencies($itemName);
+                $deps = $repo->$depMethod($itemName);
 
-                $this->msg("checkingDependencies", $itemName, $deps);
+                $this->msg($depMsgType, $itemName, $deps);
                 $allDepsOk = true;
                 foreach ($deps as $dep) {
                     $this->msg($msgType, $dep);

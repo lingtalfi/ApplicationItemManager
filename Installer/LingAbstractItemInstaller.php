@@ -128,22 +128,21 @@ abstract class LingAbstractItemInstaller implements InstallerInterface
     protected function msg($type, $param = null)
     {
         $msg = "";
-        $prefix = "*";
+        $prefix = "* ";
         $output = $this->output;
         $itemType = ucfirst($this->itemType);
         switch ($type) {
-            case 'install':
+            case 'installed':
                 $msg = $prefix . "$itemType $param has been installed";
                 $output->success($msg);
                 break;
-            case 'uninstall':
+            case 'uninstalled':
                 $msg = $prefix . "$itemType $param has been uninstalled";
-                $output->error($msg);
+                $output->success($msg);
                 break;
             default:
                 break;
         }
-        echo $msg . PHP_EOL;
     }
 
 
