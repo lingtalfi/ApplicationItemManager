@@ -73,6 +73,15 @@ Then, decide where you want to import them, this directory is called the import 
 The import directory is where your items will be downloaded.
 
 
+
+Now you can create a Repository, which contains the list of all items.
+A standard repository is the LingUniverseRepository from the [uni importer](https://github.com/lingtalfi/universe-naive-importer).
+
+Have a look at the LingUniverseRepository class and make your own Repository based on that model.
+
+In the examples below, I will be using the LingUniverseRepository.
+
+
 Then, you can use the ApplicationItemManager.
 
 An ApplicationItemManager is an object that provides useful commands for importing/installing/listing/searching items.
@@ -86,78 +95,34 @@ To use the ApplicationItemManager as a standalone tool, you can use the followin
 <?php
 
 use ApplicationItemManager\Importer\GithubImporter;
-use ApplicationItemManager\Installer\KamilleModuleInstaller;
-use ApplicationItemManager\Installer\KamilleWidgetInstaller;
 use ApplicationItemManager\LingApplicationItemManager;
-use ApplicationItemManager\Repository\KamilleModulesRepository;
-use ApplicationItemManager\Repository\KamilleWidgetsRepository;
 use ApplicationItemManager\Repository\LingUniverseRepository;
-use Kamille\Architecture\ApplicationParameters\ApplicationParameters;
 use Output\WebProgramOutput;
 
-require_once __DIR__ . "/../boot.php";
-require_once __DIR__ . "/../init.php";
+
+require_once __DIR__ . "/../init.php"; // just call a decent autoloader
 
 
-$test = "modules";
+//--------------------------------------------
+// UNIVERSE APP MANAGER
+//--------------------------------------------
+$output = WebProgramOutput::create(); // testing from a browser, change this to ProgramOutput to test from cli
+$importDir = "/myphp/kaminos/app/planets";
+$manager = LingApplicationItemManager::create()// the LingApplicationItemManager is just Output friendly
+->setOutput($output)
+    ->addRepository(LingUniverseRepository::create())
+    ->bindImporter('ling', GithubImporter::create()->setGithubRepoName("lingtalfi"))
+    ->setFavoriteRepositoryId('ling')
+    ->setImportDirectory($importDir);
 
 
-if ("universe" === $test) {
-
-    //--------------------------------------------
-    // UNIVERSE APP MANAGER
-    //--------------------------------------------
-    $output = WebProgramOutput::create(); // testing from a browser, change this to ProgramOutput to test from cli
-    $importDir = "/myphp/kaminos/app/planets";
-    $manager = LingApplicationItemManager::create()// the LingApplicationItemManager is just Output friendly
-    ->setOutput($output)
-        ->addRepository(LingUniverseRepository::create())
-        ->bindImporter('ling', GithubImporter::create()->setGithubRepoName("lingtalfi"))
-        ->setFavoriteRepositoryId('ling')
-        ->setImportDirectory($importDir);
-
-
-    // below are the most useful commands
-    a($manager->search("ba")); // search the term "ba" in the available items
-    $manager->listAvailable(); // list the available items
-    $manager->install("Bat"); // install the Bat item (will import it if necessary)
-    $manager->import("AdminTable"); // import the AdminTable item
-    $manager->listImported(); // list the imported items
-    $manager->listInstalled(); // list the installed items
-
-} elseif ("widgets" === $test) {
-    //--------------------------------------------
-    // KAMILLE WIDGETS APP MANAGER
-    //--------------------------------------------
-    $output = WebProgramOutput::create();
-    $appDir = ApplicationParameters::get("app_dir"); // this is specific to the kaminos app I'm testing, don't worry
-    LingApplicationItemManager::create()
-        ->setOutput($output)
-        ->setInstaller(KamilleWidgetInstaller::create()->setOutput($output)->setApplicationDirectory($appDir))
-        ->bindImporter('KamilleWidgets', GithubImporter::create()->setGithubRepoName("KamilleWidgets"))
-        ->setFavoriteRepositoryId('KamilleWidgets')
-        ->setImportDirectory("/myphp/kaminos/app/class-widgets")
-        ->addRepository(KamilleWidgetsRepository::create(), ['km'])// notice the km alias, because KamilleWidgets is a long prefix to type
-        ->install("BookedMeteo");
-
-
-} elseif ("modules" === $test) {
-    //--------------------------------------------
-    // KAMILLE MODULES APP MANAGER
-    //--------------------------------------------
-    $output = WebProgramOutput::create();
-    $appDir = ApplicationParameters::get("app_dir");
-    LingApplicationItemManager::create()
-        ->setOutput($output)
-        ->setInstaller(KamilleModuleInstaller::create()->setOutput($output)->setApplicationDirectory($appDir))
-        ->bindImporter('KamilleModules', GithubImporter::create()->setGithubRepoName("KamilleModules"))
-        ->setFavoriteRepositoryId('KamilleModules')
-        ->setImportDirectory("/myphp/kaminos/app/class-modules")
-        ->addRepository(KamilleModulesRepository::create())
-        ->install("Connexion");
-//        ->uninstall("Connexion");
-}
-
+// below are the most useful commands
+a($manager->search("ba")); // search the term "ba" in the available items
+$manager->listAvailable(); // list the available items
+$manager->install("Bat"); // install the Bat item (will import it if necessary)
+$manager->import("AdminTable"); // import the AdminTable item
+$manager->listImported(); // list the imported items
+$manager->listInstalled(); // list the installed items
 
 
 
@@ -404,6 +369,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 
 History Log
 ------------------
+    
+- 1.7.0 -- 2017-04-01
+
+    - cleaned up directory
     
 - 1.6.0 -- 2017-04-01
 
