@@ -332,7 +332,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 $this->msg("importerProblem", $itemName, $e);
             }
         } else {
-            $this->msg("importerNotFound", $repoId);
+            $this->msg("importerNotFound", $repoId, $itemName);
         }
         return false;
     }
@@ -460,8 +460,12 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 $level = "error";
                 break;
             case 'importerNotFound':
-                $msg = "no importer is able to handle repository $param";
-                $level = "error";
+                if (null === $param) {
+                    $msg = "no importer is able to handle item $param2";
+                } else {
+                    $msg = "no importer is able to handle repository $param";
+                }
+                $level = "warn";
                 break;
             //--------------------------------------------
             // DO INSTALL
