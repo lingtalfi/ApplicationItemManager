@@ -403,6 +403,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 History Log
 ------------------
     
+- 1.4.1 -- 2017-04-01
+
+    - forgot installall command
+    
 - 1.4.0 -- 2017-04-01
 
     - add ApplicationItemManager.importAll and installAll methods, and corresponding program commands

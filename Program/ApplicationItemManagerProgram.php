@@ -9,7 +9,6 @@ use ApplicationItemManager\ApplicationItemManagerInterface;
 use ApplicationItemManager\Exception\ApplicationItemManagerException;
 use Bat\FileSystemTool;
 use CommandLineInput\CommandLineInputInterface;
-use Dir2Symlink\Dir2Symlink;
 use Dir2Symlink\ProgramOutputAwareDir2Symlink;
 use DirectoryCleaner\DirectoryCleaner;
 use Output\ProgramOutputInterface;
@@ -63,6 +62,15 @@ class ApplicationItemManagerProgram extends Program
                 $force = $input->getFlagValue('f');
                 if (false !== ($itemName = ProgramHelper::getParameter(2, $itemType, $input, $output))) {
                     $this->manager->install($itemName, $force);
+                }
+            })
+            ->addCommand("installall", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
+                $force = $input->getFlagValue('f');
+                $repoId = $input->getParameter(2);
+                if (true === $this->manager->installAll($repoId, $force)) {
+                    $output->success("All items were installed");
+                } else {
+                    $output->error("Some items couldn't be installed");
                 }
             })
             ->addCommand("uninstall", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
