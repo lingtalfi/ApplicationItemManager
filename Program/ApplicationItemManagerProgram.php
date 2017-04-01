@@ -25,6 +25,7 @@ class ApplicationItemManagerProgram extends Program
      */
     private $manager;
     private $importDirectory;
+    private $helpFile;
 
     public function __construct()
     {
@@ -152,6 +153,7 @@ class ApplicationItemManagerProgram extends Program
                 $this->dir2Symlink("toSymlinks", $output);
             });
 
+        $this->helpFile = __DIR__ . "/help.txt";
 
     }
 
@@ -181,13 +183,19 @@ class ApplicationItemManagerProgram extends Program
         return $this;
     }
 
+    public function setHelpFile($helpFile)
+    {
+        $this->helpFile = $helpFile;
+        return $this;
+    }
+
 
     //--------------------------------------------
     //
     //--------------------------------------------
     protected function getHelpPath()
     {
-        return __DIR__ . "/help.txt";
+        return $this->helpFile;
     }
 
     protected function getItemType()

@@ -381,6 +381,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 History Log
 ------------------
     
+- 1.3.0 -- 2017-04-01
+
+    - add ApplicationItemManagerProgram.setHelpFile method
+    
 - 1.2.0 -- 2017-03-31
 
     - added setlocalrepo, getlocalrepo, todir, tolink methods for ApplicationItemManagerProgram
