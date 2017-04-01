@@ -168,6 +168,11 @@ class ApplicationItemManagerProgram extends Program
             })
             ->addCommand("tolink", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
                 $this->dir2Symlink("toSymlinks", $output);
+            })
+            ->addCommand("flash", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
+                $asLink = $input->getFlagValue("l");
+                $force = $input->getFlagValue("f");
+                $this->flash($this->importDirectory, $asLink, $force, $output);
             });
 
         $this->helpFile = __DIR__ . "/help.txt";
@@ -283,6 +288,22 @@ class ApplicationItemManagerProgram extends Program
                     $output->notice("ok");
                 } else {
                     $output->error("Couldn't convert all the entries in $importDir to directories, sorry");
+                }
+            } else {
+                $output->error("Local repository is not a dir: $localRepoDir. Use the setlocalrepo command to update the value");
+            }
+        }
+    }
+
+
+    private function flash($importDir, $asLink = true, $force = false, ProgramOutputInterface $output)
+    {
+        if (false !== ($localRepoDir = $this->getLocalRepository($output))) {
+            if (is_dir($localRepoDir)) {
+                if (true === ProgramOutputAwareDir2Symlink::create()->setProgramOutput($output)->equalize($localRepoDir, $importDir, $force, $asLink)) {
+                    $output->notice("ok");
+                } else {
+                    $output->error("Couldn't equalize all the entries from local repository $localRepoDir to import dir $importDir, sorry");
                 }
             } else {
                 $output->error("Local repository is not a dir: $localRepoDir. Use the setlocalrepo command to update the value");

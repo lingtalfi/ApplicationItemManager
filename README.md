@@ -1,6 +1,6 @@
 ApplicationItemManager
 ========================
-2017-03-30 -> 2017-03-21
+2017-03-30 -> 2017-04-01
 
 
 
@@ -369,6 +369,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 
 History Log
 ------------------
+    
+- 1.8.0 -- 2017-04-01
+
+    - add ApplicationItemManagerProgram.flash method
     
 - 1.7.0 -- 2017-04-01
 

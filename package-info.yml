@@ -4,3 +4,4 @@ dependencies:
     - git::/lingtalfi/Program:1.0.0
     - git::/lingtalfi/CommandLineInput:1.1.0
     - git::/lingtalfi/Dir2Symlink:1.1.0
+    - git::/lingtalfi/DirectoryCleaner:1.0.0
