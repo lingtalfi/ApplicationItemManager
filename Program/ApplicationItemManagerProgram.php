@@ -190,6 +190,7 @@ class ApplicationItemManagerProgram extends Program
     {
         $callback = function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($fn) {
             try {
+                $this->handleVerbose($input);
                 $this->handleDebug($input);
                 call_user_func($fn, $input, $output, $program);
             } catch (ApplicationItemManagerException $e) {
@@ -231,11 +232,18 @@ class ApplicationItemManagerProgram extends Program
     }
 
 
-    protected function handleDebug(CommandLineInputInterface $input)
+    protected function handleVerbose(CommandLineInputInterface $input)
     {
         if (true === $input->getFlagValue("v") && $this->manager instanceof ApplicationItemManager) {
             $this->manager->setDebugMode(true);
         }
+    }
+
+    protected function handleDebug(CommandLineInputInterface $input)
+    {
+        /**
+         * Override this method if you need
+         */
     }
 
     protected function nbIndentSpaces()

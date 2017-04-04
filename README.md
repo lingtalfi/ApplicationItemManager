@@ -370,6 +370,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 History Log
 ------------------
     
+- 1.9.0 -- 2017-04-01
+
+    - add ApplicationItemManagerProgram.handleDebug hook
+    
 - 1.8.0 -- 2017-04-01
 
     - add ApplicationItemManagerProgram.flash method
