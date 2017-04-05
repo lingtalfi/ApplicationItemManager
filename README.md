@@ -1,6 +1,6 @@
 ApplicationItemManager
 ========================
-2017-03-30 -> 2017-04-01
+2017-03-30 -> 2017-04-05
 
 
 
@@ -371,6 +371,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 
 History Log
 ------------------
+    
+- 1.11.0 -- 2017-04-05
+
+    - fix LingAbstractItemInstaller.uninstall method, more permissive
     
 - 1.10.0 -- 2017-04-05
 
