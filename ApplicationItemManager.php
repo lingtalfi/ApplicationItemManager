@@ -35,6 +35,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
 
     private $favoriteRepositoryId;
     private $debugMode;
+    private $showExceptionTrace;
 
     /**
      * @var array repositories, no aliases
@@ -47,6 +48,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         $this->repositories = [];
         $this->importers = [];
         $this->debugMode = false;
+        $this->showExceptionTrace = false;
     }
 
 
@@ -111,6 +113,14 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         $this->debugMode = $debugMode;
         return $this;
     }
+
+    public function setShowExceptionTrace($showExceptionTrace)
+    {
+        $this->showExceptionTrace = $showExceptionTrace;
+        return $this;
+    }
+
+
 
 
     //--------------------------------------------
@@ -503,6 +513,9 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 break;
             case 'uninstallProblem':
                 $msg = "a problem occurred with the uninstall: " . $param2->getMessage();
+                if (true === $this->showExceptionTrace) {
+                    $msg .= PHP_EOL . $param2;
+                }
                 $level = "error";
                 break;
             case 'itemNotUninstalled':

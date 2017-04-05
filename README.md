@@ -206,6 +206,7 @@ myprog tolink                              # converts the top level items of the
 
 # utilities
 myprog clean                               # removes the .git, .gitignore, .idea and .DS_Store files in your items directories, recursively
+myprog flash                               # equalizes the items from the local repository to the import directory (so that the import directory contains the same items as the local repository)
 
 
 
@@ -240,6 +241,7 @@ For instance:
     myprog tolink
     myprog todir
     myprog clean
+    myprog flash
 ```
 
 
@@ -369,6 +371,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 
 History Log
 ------------------
+    
+- 1.10.0 -- 2017-04-05
+
+    - add ApplicationItemManagerProgram.setShowTraceException method
     
 - 1.9.0 -- 2017-04-01
 

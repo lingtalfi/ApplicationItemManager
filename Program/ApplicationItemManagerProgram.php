@@ -22,7 +22,7 @@ class ApplicationItemManagerProgram extends Program
     /**
      * @var ApplicationItemManagerInterface
      */
-    private $manager;
+    protected $manager;
     private $importDirectory;
     private $helpFile;
 
