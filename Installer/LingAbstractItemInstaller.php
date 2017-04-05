@@ -75,9 +75,12 @@ abstract class LingAbstractItemInstaller implements InstallerInterface
     public function install($itemName)
     {
         if (false !== ($oClass = $this->getInstallerInstance($itemName))) {
+
             if ($oClass instanceof ProgramOutputAwareInterface) {
                 $oClass->setProgramOutput($this->output);
             }
+            $this->prepareItemInstaller($oClass);
+
             $installMethod = $this->installMethod;
             $oClass->$installMethod();
 
@@ -106,6 +109,8 @@ abstract class LingAbstractItemInstaller implements InstallerInterface
             if ($oClass instanceof ProgramOutputAwareInterface) {
                 $oClass->setProgramOutput($this->output);
             }
+
+            $this->prepareItemInstaller($oClass);
             $uninstallMethod = $this->uninstallMethod;
             $oClass->$uninstallMethod();
 
@@ -152,6 +157,9 @@ abstract class LingAbstractItemInstaller implements InstallerInterface
         }
     }
 
+    protected function prepareItemInstaller($object){
+
+    }
 
 
     //--------------------------------------------

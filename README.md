@@ -372,6 +372,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 History Log
 ------------------
     
+- 1.12.0 -- 2017-04-05
+
+    - add LingAbstractItemInstaller.prepareItemInstaller method
+    
 - 1.11.0 -- 2017-04-05
 
     - fix LingAbstractItemInstaller.uninstall method, more permissive
