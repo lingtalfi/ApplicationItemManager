@@ -307,6 +307,10 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         }
 
         try {
+            if (true === $force) {
+                $this->installer->uninstall($itemName);
+            }
+
             if (true === $this->installer->install($itemName)) {
                 $this->msg("itemInstalled", $itemName);
             } else {

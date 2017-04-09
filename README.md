@@ -1,6 +1,6 @@
 ApplicationItemManager
 ========================
-2017-03-30 -> 2017-04-05
+2017-03-30 -> 2017-04-09
 
 
 
@@ -371,6 +371,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 
 History Log
 ------------------
+    
+- 1.14.0 -- 2017-04-09
+
+    - ApplicationItemManager.install now calls uninstall if -f flag was on
     
 - 1.13.0 -- 2017-04-05
 
