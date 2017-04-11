@@ -237,6 +237,9 @@ class ApplicationItemManagerProgram extends Program
         if (true === $input->getFlagValue("v") && $this->manager instanceof ApplicationItemManager) {
             $this->manager->setDebugMode(true);
         }
+        if (true === $input->getFlagValue("t") && $this->manager instanceof ApplicationItemManager) {
+            $this->manager->setShowExceptionTrace(true);
+        }
     }
 
     protected function handleDebug(CommandLineInputInterface $input)
