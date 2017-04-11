@@ -470,7 +470,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 $level = "success";
                 break;
             case 'importerProblem':
-                $msg = "A problem occurred with the import: " . $param2->getMessage();
+                $msg = "A problem occurred with the import: " . $this->getExceptionAsString($param2);
                 $level = "error";
                 break;
             case 'importerNotFound':
@@ -497,7 +497,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 $level = "success";
                 break;
             case 'installProblem':
-                $msg = "a problem occurred with the install: " . $param2->getMessage();
+                $msg = "a problem occurred with the install: " . $this->getExceptionAsString($param2);
                 $level = "error";
                 break;
             case 'itemNotInstalled':
@@ -516,10 +516,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 $level = "success";
                 break;
             case 'uninstallProblem':
-                $msg = "a problem occurred with the uninstall: " . $param2->getMessage();
-                if (true === $this->showExceptionTrace) {
-                    $msg .= PHP_EOL . $param2;
-                }
+                $msg = "a problem occurred with the uninstall: " . $this->getExceptionAsString($param2);
                 $level = "error";
                 break;
             case 'itemNotUninstalled':
@@ -714,6 +711,14 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         $all = array_unique($all);
         sort($all);
         return $all;
+    }
+
+    private function getExceptionAsString(\Exception $e)
+    {
+        if (true === $this->showExceptionTrace) {
+            return PHP_EOL . (string)$e;
+        }
+        return $e->getMessage();
     }
 
 }

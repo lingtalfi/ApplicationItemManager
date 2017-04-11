@@ -372,6 +372,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 History Log
 ------------------
     
+- 1.15.0 -- 2017-04-11
+
+    - ApplicationItemManager messages with exceptions work in sync with trace
+    
 - 1.14.0 -- 2017-04-09
 
     - ApplicationItemManager.install now calls uninstall if -f flag was on
