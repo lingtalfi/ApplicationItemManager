@@ -187,7 +187,7 @@ myprog install -f {item}                   # install an item and its dependencie
 myprog installall {repoId}?                # install all items at once, will import them if necessary, skip already existing item(s)/dependencies
 myprog installall {repoId}? -f             # install all items at once, will import them if necessary, replace already existing item(s)/dependencies
 myprog uninstall {item}                    # call the uninstall method on the given item and dependencies
-myprog updateall {repoId}                  # update all item (much faster than importall -f, but only available for github importer for now
+myprog updateall {repoId}?                  # update all item (much faster than importall -f, but only available for github importer for now
 
 
 # list/search
