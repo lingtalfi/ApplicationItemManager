@@ -177,7 +177,7 @@ The word item is defined like this:
 - itemId: repositoryId.itemName | repositoryAlias.itemName
 
 
-# import/install
+# import/install/update
 myprog import {item}                       # import an item and its dependencies, skip already existing item(s)/dependencies
 myprog import -f {item}                    # import an item and its dependencies, replace already existing item(s)/dependencies
 myprog importall {repoId}?                 # import all items at once, skip already existing item(s)/dependencies
@@ -187,6 +187,7 @@ myprog install -f {item}                   # install an item and its dependencie
 myprog installall {repoId}?                # install all items at once, will import them if necessary, skip already existing item(s)/dependencies
 myprog installall {repoId}? -f             # install all items at once, will import them if necessary, replace already existing item(s)/dependencies
 myprog uninstall {item}                    # call the uninstall method on the given item and dependencies
+myprog updateall {repoId}                  # update all item (much faster than importall -f, but only available for github importer for now
 
 
 # list/search
@@ -226,6 +227,8 @@ For instance:
     myprog installall -f
     myprog uninstall Connexion
     myprog uninstall km.Connexion
+    myprog updateall 
+    myprog updateall ling 
     myprog list
     myprog list km
     myprog listd
@@ -371,6 +374,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 
 History Log
 ------------------
+    
+- 1.16.0 -- 2017-06-08
+
+    - add updateall command
     
 - 1.15.1 -- 2017-04-11
 

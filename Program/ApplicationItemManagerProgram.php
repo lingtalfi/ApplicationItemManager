@@ -78,6 +78,10 @@ class ApplicationItemManagerProgram extends Program
                     $this->manager->uninstall($itemName);
                 }
             })
+            ->addCommand("updateall", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
+                $repoId = $input->getParameter(2);
+                $this->manager->updateAll($repoId);
+            })
             ->addCommand("list", function (CommandLineInputInterface $input, ProgramOutputInterface $output, ProgramInterface $program) use ($itemType) {
                 $repoId = $input->getParameter(2);
                 $keys = null;

@@ -54,4 +54,21 @@ class GithubImporter implements ImporterInterface
             return false;
         }
     }
+
+
+    public function update($item, $importDirectory)
+    {
+        $dir = $importDirectory . "/$item";
+        $output = [];
+        $returnVar = 0;
+        $cmd = 'cd "' . $dir . '"; git pull';
+        a($cmd);
+        exec($cmd, $output, $returnVar);
+
+        if (0 === $returnVar) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
