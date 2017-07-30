@@ -32,11 +32,10 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
      * @var RepositoryInterface[]
      */
     protected $repositories;
-    private $importDirectory;
+    protected $importDirectory;
 
     private $favoriteRepositoryId;
     private $debugMode;
-    private $showExceptionTrace;
 
     /**
      * @var array repositories, no aliases
@@ -49,7 +48,6 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         $this->repositories = [];
         $this->importers = [];
         $this->debugMode = false;
-        $this->showExceptionTrace = false;
     }
 
 
@@ -114,14 +112,6 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         $this->debugMode = $debugMode;
         return $this;
     }
-
-    public function setShowExceptionTrace($showExceptionTrace)
-    {
-        $this->showExceptionTrace = $showExceptionTrace;
-        return $this;
-    }
-
-
 
 
     //--------------------------------------------
@@ -287,7 +277,6 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         }
     }
 
-
     public function updateAll($repoId = null)
     {
 
@@ -297,13 +286,14 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
             $itemName = $this->getItemNameByItem($item);
             $repoId = $this->getRepoIdByItemId($item);
             $importer = $this->findImporter($repoId);
-            if($importer instanceof GithubImporter){
+            if ($importer instanceof GithubImporter) {
                 $importer->update($itemName, $this->importDirectory);
 
             }
         }
         return $allOk;
     }
+
 
 
     //--------------------------------------------
@@ -326,10 +316,6 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         }
 
         try {
-            if (true === $force) {
-                $this->installer->uninstall($itemName);
-            }
-
             if (true === $this->installer->install($itemName)) {
                 $this->msg("itemInstalled", $itemName);
             } else {
@@ -369,7 +355,6 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         }
         return false;
     }
-
 
     /**
      * @return ImporterInterface|false
@@ -489,7 +474,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 $level = "success";
                 break;
             case 'importerProblem':
-                $msg = "A problem occurred with the import: " . $this->getExceptionAsString($param2);
+                $msg = "A problem occurred with the import: " . $param2->getMessage();
                 $level = "error";
                 break;
             case 'importerNotFound':
@@ -516,7 +501,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 $level = "success";
                 break;
             case 'installProblem':
-                $msg = "a problem occurred with the install: " . $this->getExceptionAsString($param2);
+                $msg = "a problem occurred with the install: " . $param2->getMessage();
                 $level = "error";
                 break;
             case 'itemNotInstalled':
@@ -535,7 +520,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
                 $level = "success";
                 break;
             case 'uninstallProblem':
-                $msg = "a problem occurred with the uninstall: " . $this->getExceptionAsString($param2);
+                $msg = "a problem occurred with the uninstall: " . $param2->getMessage();
                 $level = "error";
                 break;
             case 'itemNotUninstalled':
@@ -600,7 +585,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         throw new ApplicationItemManagerException("Invalid itemId syntax: $itemId. itemId=repoId.itemName");
     }
 
-    private function getRepoId($item)
+    protected function getRepoId($item)
     {
         $this->msg("checkingRepo", $item);
         $repoId = $this->findRepo($item, $this->favoriteRepositoryId);
@@ -649,24 +634,30 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
     }
 
 
-    private function handleProcedure($type, $item, $repoId, $force)
+    protected function handleProcedure($type, $item, $repoId, $force, array $procedure = null)
     {
 
-        if ('install' === $type) {
-            $method = 'doInstall';
-            $msgType = "installingDependencyItem";
-            $depMethod = "getDependencies";
-            $depMsgType = "checkingDependencies";
-        } elseif ('uninstall' === $type) {
-            $method = 'doUninstall';
-            $msgType = "uninstallingDependencyItem";
-            $depMethod = "getHardDependencies";
-            $depMsgType = "checkingHardDependencies";
+        if (false !== $procedure) {
+            list($method, $msgType, $depMethod, $depMsgType) = $procedure;
         } else {
-            $depMethod = "getDependencies";
-            $depMsgType = "checkingDependencies";
-            $method = 'doImport';
-            $msgType = "importingDependencyItem";
+
+
+            if ('install' === $type) {
+                $method = 'doInstall';
+                $msgType = "installingDependencyItem";
+                $depMethod = "getDependencies";
+                $depMsgType = "checkingDependencies";
+            } elseif ('uninstall' === $type) {
+                $method = 'doUninstall';
+                $msgType = "uninstallingDependencyItem";
+                $depMethod = "getHardDependencies";
+                $depMsgType = "checkingHardDependencies";
+            } else {
+                $method = 'doImport';
+                $msgType = "importingDependencyItem";
+                $depMethod = "getDependencies";
+                $depMsgType = "checkingDependencies";
+            }
         }
 
         $itemName = $this->getItemNameByItem($item);
@@ -730,14 +721,6 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
         $all = array_unique($all);
         sort($all);
         return $all;
-    }
-
-    private function getExceptionAsString(\Exception $e)
-    {
-        if (true === $this->showExceptionTrace) {
-            return PHP_EOL . (string)$e;
-        }
-        return $e->getMessage();
     }
 
 }

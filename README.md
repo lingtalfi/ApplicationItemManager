@@ -1,6 +1,6 @@
 ApplicationItemManager
 ========================
-2017-03-30 -> 2017-04-09
+2017-03-30 -> 2017-07-30
 
 
 
@@ -198,16 +198,9 @@ myprog listinstalled                       # list installed items
 myprog search {term} {repoAlias}?          # search through available items names
 myprog searchd {term} {repoAlias}?         # search through available items names and/or description
 
-# local (shared) repo
-myprog setlocalrepo {repoPath}             # set the local repository path
-myprog getlocalrepo                        # print the local repository path
-myprog todir                               # converts the top level items of the import directory to directories (based on the directories in local repo)
-myprog tolink                              # converts the top level items of the import directory to symlinks to the directories in local repo
-
 
 # utilities
 myprog clean                               # removes the .git, .gitignore, .idea and .DS_Store files in your items directories, recursively
-myprog flash                               # equalizes the items from the local repository to the import directory (so that the import directory contains the same items as the local repository)
 
 
 
@@ -239,16 +232,34 @@ For instance:
     myprog search ling km
     myprog searchd kaminos
     myprog searchd kaminos km
-    myprog setlocalrepo /path/to/local/repo
-    myprog getlocalrepo
-    myprog tolink
-    myprog todir
     myprog clean
-    myprog flash
+    
 ```
 
 
 
+The LocalAwareApplicationItemManager, which let you have a local proxy on your machine (instead of fetching the items
+on an external machine) has a few more methods:
+
+```txt
+
+# local (shared) repo
+myprog setlocalrepo {repoPath}             # set the local repository path
+myprog getlocalrepo                        # print the local repository path
+myprog todir                               # converts the top level items of the import directory to directories (based on the directories in local repo)
+myprog tolink                              # converts the top level items of the import directory to symlinks to the directories in local repo
+
+
+# utilities
+myprog flash                               # equalizes the items from the local repository to the import directory (so that the import directory contains the same items as the local repository)
+
+
+myprog setlocalrepo /path/to/local/repo
+    myprog getlocalrepo
+    myprog tolink
+    myprog todir
+    myprog flash
+```
 
 
 
@@ -374,6 +385,12 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 
 History Log
 ------------------
+    
+- 1.17.0 -- 2017-07-30
+
+    - add zimport command
+    - add LocalAwareApplicationItemManager
+    - add LocalAwareApplicationItemManagerProgram
     
 - 1.16.0 -- 2017-06-08
 
