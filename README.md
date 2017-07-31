@@ -386,6 +386,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 History Log
 ------------------
     
+- 1.18.0 -- 2017-07-31
+
+    - fix ApplicationItemManager bug
+    
 - 1.17.0 -- 2017-07-30
 
     - add zimport command

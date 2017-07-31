@@ -637,7 +637,7 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
     protected function handleProcedure($type, $item, $repoId, $force, array $procedure = null)
     {
 
-        if (false !== $procedure) {
+        if (null !== $procedure) {
             list($method, $msgType, $depMethod, $depMsgType) = $procedure;
         } else {
 
