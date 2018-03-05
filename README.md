@@ -388,6 +388,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 History Log
 ------------------
     
+- 1.19.0 -- 2018-03-05
+
+    - add program reimport-existing command
+    
 - 1.18.1 -- 2018-03-05
 
     - fix ApplicationItemManager not installing dependencies when the module is installed for the first time

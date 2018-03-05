@@ -11,6 +11,7 @@ use ApplicationItemManager\Importer\GithubImporter;
 use ApplicationItemManager\Importer\ImporterInterface;
 use ApplicationItemManager\Installer\InstallerInterface;
 use ApplicationItemManager\Repository\RepositoryInterface;
+use Bat\FileSystemTool;
 use Kamille\Module\DependencyAwareModuleInterface;
 
 
@@ -220,6 +221,15 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
             }
         }
         return $allOk;
+    }
+
+    public function reimportExisting($repoId = null)
+    {
+
+        $items = $this->listImported();
+        foreach ($items as $item) {
+            $this->import($item, true);
+        }
     }
 
 
@@ -669,7 +679,6 @@ class ApplicationItemManager implements ApplicationItemManagerInterface
 
         $itemName = $this->getItemNameByItem($item);
         $r = $this->$method($itemName, $repoId, $force);
-        a($itemName, $r, $method, $repoId, $force);
         if (false === $r) {
             return false;
         } else {
