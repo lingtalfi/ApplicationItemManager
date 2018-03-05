@@ -383,8 +383,14 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 
 
 
+
+
 History Log
 ------------------
+    
+- 1.18.1 -- 2018-03-05
+
+    - fix ApplicationItemManager not installing dependencies when the module is installed for the first time
     
 - 1.18.0 -- 2017-07-31
 

@@ -4,6 +4,7 @@ namespace ApplicationItemManager\Installer;
 
 
 use ApplicationItemManager\Exception\ApplicationItemManagerException;
+use ApplicationItemManager\Helper\KamilleApplicationItemManagerHelper;
 use ApplicationItemManager\Installer\Exception\InstallerException;
 use Output\ProgramOutputAwareInterface;
 use Output\ProgramOutputInterface;
@@ -157,7 +158,8 @@ abstract class LingAbstractItemInstaller implements InstallerInterface
         }
     }
 
-    protected function prepareItemInstaller($object){
+    protected function prepareItemInstaller($object)
+    {
 
     }
 
@@ -173,14 +175,11 @@ abstract class LingAbstractItemInstaller implements InstallerInterface
 
     private function getInstallerInstance($item, $throwEx = true)
     {
-        $class = $this->getInstallerClass($item);
-        if (class_exists($class)) {
-            return new $class;
+        try {
+            return KamilleApplicationItemManagerHelper::getInstallerInstance($item, $throwEx);
+        } catch (\Exception $e) {
+            throw new InstallerException($e->getMessage());
         }
-        if (true === $throwEx) {
-            throw new InstallerException("Instance of $class not found");
-        }
-        return false;
     }
 
 }
