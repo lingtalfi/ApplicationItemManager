@@ -403,6 +403,10 @@ such as when you uninstall item A, item B is also uninstalled (assuming B depend
 History Log
 ------------------
     
+- 1.19.1 -- 2018-03-06
+
+    - fix LingAbstractItemInstaller::uninstall method algorithm return false
+    
 - 1.19.0 -- 2018-03-05
 
     - add program reimport-existing command

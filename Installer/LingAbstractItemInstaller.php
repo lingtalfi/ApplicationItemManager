@@ -120,7 +120,10 @@ abstract class LingAbstractItemInstaller implements InstallerInterface
         /**
          * If the item instance is not there, maybe it was not imported in the first place,
          * we don't want to alarm the user with that, just proceed to uninstalling
-         * the item from the list...
+         * the item from the list (of installed modules)...
+         *
+         * Note that it's possible that the module name has been already removed,
+         * in which case we still have a successful uninstall.
          */
 
         $this->msg("uninstalled", $itemName);
@@ -132,7 +135,7 @@ abstract class LingAbstractItemInstaller implements InstallerInterface
                 return true;
             }
         }
-        return false;
+        return true;
     }
 
     //--------------------------------------------
