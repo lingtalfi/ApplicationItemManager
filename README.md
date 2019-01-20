@@ -23,7 +23,7 @@ This planet contains a set of tools helping you implementing a management system
 
 A picture being worth a thousand words, let's start with a picture:
 
-[![ApplicationItemManager-overview.jpg](https://s19.postimg.org/kn2gln6g3/Application_Item_Manager-overview.jpg)](https://postimg.org/image/5ecj7vcrj/)
+[![Application-Item-Manager-overview.jpg](https://i.postimg.cc/RCw5HpxC/Application-Item-Manager-overview.jpg)](https://postimg.cc/Z0YMkcqX)
 
 
 As you can probably see, there are different objects:
