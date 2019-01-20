@@ -9,7 +9,18 @@ A manager for the modules of your application.
 
 
 
-This is part of the [universe framework](https://github.com/karayabin/universe-snapshot).
+ApplicationItemManager is part of the [universe](https://github.com/karayabin/universe-snapshot) framework.
+
+
+
+Install
+=============
+
+
+Using the [uni tool](https://github.com/lingtalfi/universe-naive-importer)
+```bash
+uni import ApplicationItemManager
+```
 
 
 
